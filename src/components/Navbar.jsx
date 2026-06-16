@@ -1,8 +1,16 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
 
 function Navbar() {
   const { getTotalItems } = useCart()
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
 
   return (
     <nav className="bg-gray-950 text-white px-8 py-4 flex justify-between items-center sticky top-0 z-50 shadow-lg">
@@ -19,6 +27,29 @@ function Navbar() {
             </span>
           )}
         </Link>
+        {user ? (
+          <div className="flex items-center gap-4">
+            <span className="text-purple-400 font-medium">Hi, {user.name}!</span>
+            {user.isAdmin && (
+              <Link to="/admin" className="text-yellow-400 hover:text-yellow-300 transition font-medium">
+                Admin
+              </Link>
+            )}
+            <button
+              onClick={handleLogout}
+              className="border border-purple-500 text-purple-400 px-4 py-1 rounded-full text-sm hover:bg-purple-500 hover:text-white transition"
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-4 items-center">
+            <Link to="/login" className="hover:text-purple-400 transition">Login</Link>
+            <Link to="/register" className="bg-purple-600 hover:bg-purple-700 px-4 py-1 rounded-full text-sm transition">
+              Register
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   )
