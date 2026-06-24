@@ -1,3 +1,4 @@
+import ProductGallery from '../components/ProductGallery'
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -36,11 +37,7 @@ function ProductPage() {
           ← Back to Products
         </button>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full rounded-2xl object-cover"
-          />
+          <ProductGallery mainImage={product.image} images={product.images} />
           <div>
             <span className="text-purple-400 font-medium">{product.category}</span>
             <p className="text-4xl font-bold text-white mt-6">${product.price}</p>

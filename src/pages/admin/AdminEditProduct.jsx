@@ -9,6 +9,7 @@ function AdminEditProduct() {
   const [description, setDescription] = useState('')
   const [price, setPrice] = useState('')
   const [image, setImage] = useState('')
+  const [extraImages, setExtraImages] = useState('')
   const [category, setCategory] = useState('')
   const [stock, setStock] = useState('')
   const [loading, setLoading] = useState(false)
@@ -23,6 +24,7 @@ function AdminEditProduct() {
         setDescription(data.description)
         setPrice(data.price)
         setImage(data.image)
+        setExtraImages((data.images || []).join(', '))
         setCategory(data.category)
         setStock(data.stock)
       })
@@ -34,9 +36,14 @@ function AdminEditProduct() {
     setLoading(true)
     setError('')
     try {
+      const images = extraImages
+        .split(',')
+        .map(url => url.trim())
+        .filter(url => url.length > 0)
+
       await axios.put(
         `http://localhost:5000/api/products/${id}`,
-        { name, description, price, image, category, stock },
+        { name, description, price, image, images, category, stock },
         { headers: { Authorization: `Bearer ${user.token}` } }
       )
       navigate('/admin/products')
@@ -82,10 +89,17 @@ function AdminEditProduct() {
           />
           <input
             type="text"
-            placeholder="Image URL"
+            placeholder="Main Image URL"
             value={image}
             onChange={(e) => setImage(e.target.value)}
             required
+            className="bg-gray-800 text-white px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <input
+            type="text"
+            placeholder="Extra Image URLs (comma separated, optional)"
+            value={extraImages}
+            onChange={(e) => setExtraImages(e.target.value)}
             className="bg-gray-800 text-white px-4 py-3 rounded-xl outline-none focus:ring-2 focus:ring-purple-500"
           />
           <input
