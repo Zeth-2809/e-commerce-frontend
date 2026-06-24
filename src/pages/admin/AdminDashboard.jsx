@@ -21,6 +21,12 @@ function AdminDashboard() {
             <h2 className="text-2xl font-bold text-white mb-2">Add Product</h2>
             <p className="text-gray-400">Add a new product to the store</p>
           </Link>
+          
+          <Link to="/admin/orders" className="bg-gray-900 rounded-2xl p-8 hover:scale-105 transition duration-300">
+            <div className="text-4xl mb-4">🚚</div>
+            <h2 className="text-2xl font-bold text-white mb-2">Orders</h2>
+            <p className="text-gray-400">View and manage customer orders</p>
+          </Link>
         </div>
       </div>
     </div>
