@@ -9,6 +9,7 @@ function ProductPage() {
   const { addToCart } = useCart()
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [qty, setQty] = useState(1)
 
   useEffect(() => {
     axios.get(`http://localhost:5000/api/products/${id}`)
@@ -42,15 +43,42 @@ function ProductPage() {
           />
           <div>
             <span className="text-purple-400 font-medium">{product.category}</span>
-            <h1 className="text-4xl font-bold text-white mt-2">{product.name}</h1>
-            <p className="text-gray-400 mt-4 text-lg">{product.description}</p>
             <p className="text-4xl font-bold text-white mt-6">${product.price}</p>
-            <p className="text-gray-400 mt-2">Stock: {product.stock} left</p>
+            {product.stock > 0 ? (
+              <p className="text-gray-400 mt-2">Stock: {product.stock} left</p>
+            ) : (
+              <p className="text-red-400 font-medium mt-2">Out of Stock</p>
+            )}
+
+            {product.stock > 0 && (
+              <div className="flex items-center gap-4 mt-6">
+                <span className="text-gray-400">Quantity:</span>
+                <div className="flex items-center gap-4 bg-gray-800 rounded-full px-4 py-2">
+                  <button
+                    onClick={() => setQty(prev => Math.max(prev - 1, 1))}
+                    disabled={qty <= 1}
+                    className="text-white w-6 h-6 flex items-center justify-center hover:text-purple-400 disabled:opacity-30 transition"
+                  >
+                    −
+                  </button>
+                  <span className="text-white font-medium w-6 text-center">{qty}</span>
+                  <button
+                    onClick={() => setQty(prev => Math.min(prev + 1, product.stock))}
+                    disabled={qty >= product.stock}
+                    className="text-white w-6 h-6 flex items-center justify-center hover:text-purple-400 disabled:opacity-30 transition"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            )}
+
             <button
-              onClick={() => { addToCart(product); navigate('/cart') }}
-              className="mt-8 w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
+              onClick={() => { addToCart(product, qty); navigate('/cart') }}
+              disabled={product.stock <= 0}
+              className="mt-6 w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white py-3 rounded-xl font-semibold hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Add to Cart 🛒
+              {product.stock > 0 ? 'Add to Cart 🛒' : 'Sold Out'}
             </button>
           </div>
         </div>
